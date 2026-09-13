@@ -51,6 +51,34 @@ def test_generation_failure_does_not_cache(client):
     assert app.state.store.get("test-id") is None
 
 
-def test_only_phase_one_routes(client):
+def test_health_not_yet_wired(client):
     assert client[0].get("/api/health").status_code == 404
-    assert client[0].post("/api/check", json={}).status_code == 404
+
+
+@pytest.mark.parametrize("correct", [True, False])
+def test_check_reveals_cached_solution(client, correct):
+    import json
+    client[0].post("/api/generate", json={"topic": "anova", "difficulty": "easy"})
+    client[1].complete_json.return_value = json.dumps({"correct": correct, "feedback": "Explanation"})
+    response = client[0].post("/api/check", json={"problem_id": "test-id", "user_answer": "My answer"})
+    assert response.status_code == 200
+    assert response.json() == {"correct": correct, "feedback": "Explanation",
+                               "solution_steps": ["Private solution"], "final_answer": "Private answer"}
+
+
+def test_unknown_problem_does_not_grade(client):
+    response = client[0].post("/api/check", json={"problem_id": "missing", "user_answer": "42"})
+    assert response.status_code == 404
+    client[1].complete_json.assert_not_called()
+
+
+def test_blank_answer_does_not_grade(client):
+    client[0].post("/api/generate", json={"topic": "anova", "difficulty": "easy"})
+    assert client[0].post("/api/check", json={"problem_id": "test-id", "user_answer": "  "}).status_code == 422
+    client[1].complete_json.assert_not_called()
+
+
+def test_grading_failure_returns_502(client):
+    client[0].post("/api/generate", json={"topic": "anova", "difficulty": "easy"})
+    client[1].complete_json.side_effect = GenerationError("Provider failure")
+    assert client[0].post("/api/check", json={"problem_id": "test-id", "user_answer": "42"}).status_code == 502

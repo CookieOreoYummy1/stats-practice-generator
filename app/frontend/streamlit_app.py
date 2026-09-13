@@ -87,4 +87,54 @@ for index, problem in enumerate(st.session_state.problems, start=1):
     with st.container():
         st.subheader(f"Problem {index}")
         st.markdown(problem["question"])
-        st.text_input("Your answer", key=f"answer_{problem['id']}")
+        problem_id = problem["id"]
+        checked = problem_id in st.session_state.results
+        answer = st.text_input("Your answer", key=f"answer_{problem_id}", disabled=checked)
+        if st.button("Check Answer", key=f"check_{problem_id}", disabled=checked):
+            if not answer.strip():
+                st.error("Enter an answer before checking.")
+            else:
+                with st.spinner("Checking your answer..."):
+                    try:
+                        response = requests.post(
+                            f"{BACKEND_URL}/api/check",
+                            json={"problem_id": problem_id, "user_answer": answer},
+                            timeout=(10, 180),
+                        )
+                        response.raise_for_status()
+                        result = response.json()
+                        if (not isinstance(result, dict)
+                            or type(result.get("correct")) is not bool
+                            or not isinstance(result.get("feedback"), str)
+                            or not isinstance(result.get("final_answer"), str)
+                            or not isinstance(result.get("solution_steps"), list)
+                            or not all(isinstance(step, str) for step in result["solution_steps"])):
+                            raise ValueError("Invalid answer-check response")
+                    except requests.HTTPError as exc:
+                        if exc.response is not None and exc.response.status_code == 404:
+                            st.error("This problem is no longer available. Generate a new set of problems.")
+                        else:
+                            st.error("Couldn't check your answer. Please try again.")
+                    except (requests.RequestException, ValueError):
+                        st.error("Couldn't check your answer. Please try again.")
+                    else:
+                        st.session_state.results[problem_id] = result
+                        st.session_state.score["attempted"] += 1
+                        st.session_state.score["correct"] += int(result["correct"])
+                        st.rerun()
+
+        if problem_id in st.session_state.results:
+            result = st.session_state.results[problem_id]
+            if result["correct"]:
+                st.success(result["feedback"])
+            else:
+                st.error(result["feedback"])
+            st.markdown("**Worked solution**")
+            for step in result["solution_steps"]:
+                st.markdown(step)
+            st.markdown("**Final answer**")
+            st.markdown(result["final_answer"])
+
+st.sidebar.metric(
+    "Score", f"{st.session_state.score['correct']}/{st.session_state.score['attempted']}"
+)

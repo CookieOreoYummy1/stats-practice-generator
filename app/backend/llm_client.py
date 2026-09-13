@@ -39,6 +39,11 @@ class LLMClient:
     def close(self) -> None:
         self.client.close()
 
+    def complete_json(self, messages: list[dict[str, str]]) -> str:
+        """Return JSON-mode text using the shared provider and retry policy."""
+        completion = self._complete(messages)
+        return (completion.choices[0].message.content or "") if completion.choices else ""
+
     def _complete(self, messages: list[dict[str, str]]):
         timeout_retries = 0
         rate_retries = 0

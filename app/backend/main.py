@@ -6,6 +6,8 @@ from fastapi import FastAPI, HTTPException, Request
 from starlette.concurrency import run_in_threadpool
 
 from .llm_client import GenerationError, LLMClient
+from .grading import GradingError, grade_answer
+from .models import AnswerCheckRequest, AnswerCheckResponse
 from .models import ProblemBatchResponse, ProblemPublic, ProblemRequest
 from .prompts import TOPIC_TAXONOMY
 from .store import ProblemStore
@@ -42,3 +44,16 @@ def generate(payload: ProblemRequest, request: Request) -> ProblemBatchResponse:
     return ProblemBatchResponse(
         problems=[ProblemPublic.model_validate(problem.model_dump()) for problem in problems]
     )
+
+
+@app.post("/api/check", response_model=AnswerCheckResponse)
+def check(payload: AnswerCheckRequest, request: Request) -> AnswerCheckResponse:
+    problem = request.app.state.store.get(payload.problem_id)
+    if problem is None:
+        raise HTTPException(status_code=404, detail="Problem not found. Generate a new set of problems.")
+    if not payload.user_answer.strip():
+        raise HTTPException(status_code=422, detail="Enter an answer before checking.")
+    try:
+        return grade_answer(problem, payload.user_answer, request.app.state.llm_client)
+    except GradingError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
