@@ -19,6 +19,28 @@ st.session_state.setdefault("hints_shown", {})
 st.session_state.setdefault("score", {"correct": 0, "attempted": 0})
 
 
+def reset_practice() -> None:
+    for key in list(st.session_state):
+        if key.startswith(("answer_", "check_", "hint_")):
+            st.session_state.pop(key, None)
+    st.session_state.problems = []
+    st.session_state.results = {}
+    st.session_state.hints_shown = {}
+    st.session_state.score = {"correct": 0, "attempted": 0}
+
+
+def api_error_message(error: requests.HTTPError, fallback: str) -> str:
+    if error.response is not None:
+        try:
+            data = error.response.json()
+            detail = data.get("detail") if isinstance(data, dict) else None
+            if isinstance(detail, str) and detail.strip():
+                return detail
+        except ValueError:
+            pass
+    return fallback
+
+
 @st.cache_data(ttl=300, show_spinner=False)
 def load_topics(backend_url: str) -> list[dict]:
     response = requests.get(f"{backend_url}/api/topics", timeout=10)
@@ -50,6 +72,7 @@ with st.sidebar:
     difficulty = st.radio("Difficulty", ["easy", "medium", "hard"], format_func=str.title)
     count = st.slider("Number of problems", min_value=1, max_value=5, value=1)
     generate = st.button("Generate Problems", type="primary", disabled=not topics)
+    st.button("New Set", on_click=reset_practice)
 
 if generate:
     with st.spinner("Generating problems..."):
@@ -65,21 +88,21 @@ if generate:
             if not isinstance(problems, list) or len(problems) != count:
                 raise ValueError("Unexpected problem count")
             if any(not isinstance(p, dict) or not isinstance(p.get("id"), str)
-                   or not isinstance(p.get("question"), str) for p in problems):
+                   or not isinstance(p.get("question"), str)
+                   or not isinstance(p.get("hints"), list)
+                   or not all(isinstance(hint, str) for hint in p["hints"]) for p in problems):
                 raise ValueError("Invalid problem data")
             if len({p["id"] for p in problems}) != len(problems):
                 raise ValueError("Duplicate problem IDs")
         except requests.Timeout:
             st.error("Problem generation timed out. Please try again.")
+        except requests.HTTPError as exc:
+            st.error(api_error_message(exc, "Couldn't generate problems. Please try again."))
         except (requests.RequestException, ValueError, KeyError, TypeError):
             st.error("Couldn't generate problems. Make sure the backend is running and try again.")
         else:
-            for old_problem in st.session_state.problems:
-                st.session_state.pop(f"answer_{old_problem['id']}", None)
+            reset_practice()
             st.session_state.problems = problems
-            st.session_state.results = {}
-            st.session_state.hints_shown = {}
-            st.session_state.score = {"correct": 0, "attempted": 0}
 
 if not st.session_state.problems:
     st.info("Choose a topic and difficulty in the sidebar, then select Generate Problems.")
@@ -91,6 +114,19 @@ for index, problem in enumerate(st.session_state.problems, start=1):
         problem_id = problem["id"]
         checked = problem_id in st.session_state.results
         answer = st.text_input("Your answer", key=f"answer_{problem_id}", disabled=checked)
+        with st.expander("Hint"):
+            hints = problem.get("hints", [])
+            shown = st.session_state.hints_shown.get(problem_id, 0)
+            if st.button("Next hint", key=f"hint_{problem_id}", disabled=shown >= len(hints)):
+                shown += 1
+                st.session_state.hints_shown[problem_id] = shown
+                st.rerun()
+            for hint in hints[:shown]:
+                st.markdown(normalize_math(hint))
+            if not hints:
+                st.caption("No hints available for this problem.")
+            elif shown == len(hints):
+                st.caption("All hints shown.")
         if st.button("Check Answer", key=f"check_{problem_id}", disabled=checked):
             if not answer.strip():
                 st.error("Enter an answer before checking.")
@@ -113,9 +149,11 @@ for index, problem in enumerate(st.session_state.problems, start=1):
                             raise ValueError("Invalid answer-check response")
                     except requests.HTTPError as exc:
                         if exc.response is not None and exc.response.status_code == 404:
-                            st.error("This problem is no longer available. Generate a new set of problems.")
+                            st.error('This problem is no longer available. Select "New Set" in the sidebar, then generate problems.')
                         else:
-                            st.error("Couldn't check your answer. Please try again.")
+                            st.error(api_error_message(exc, "Couldn't check your answer. Please try again."))
+                    except requests.Timeout:
+                        st.error("Answer checking timed out. Please try again.")
                     except (requests.RequestException, ValueError):
                         st.error("Couldn't check your answer. Please try again.")
                     else:

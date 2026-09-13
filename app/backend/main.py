@@ -50,7 +50,7 @@ def generate(payload: ProblemRequest, request: Request) -> ProblemBatchResponse:
 def check(payload: AnswerCheckRequest, request: Request) -> AnswerCheckResponse:
     problem = request.app.state.store.get(payload.problem_id)
     if problem is None:
-        raise HTTPException(status_code=404, detail="Problem not found. Generate a new set of problems.")
+        raise HTTPException(status_code=404, detail='Problem not found. Select "New Set" and generate problems again.')
     if not payload.user_answer.strip():
         raise HTTPException(status_code=422, detail="Enter an answer before checking.")
     try:
