@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+streamlit
+groq
+pydantic>=2
+python-dotenv
+requests
+pytest
+httpx
