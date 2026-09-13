@@ -3,17 +3,14 @@
 | | |
 |---|---|
 | **Project** | LLM-Powered Statistics Practice Problem Generator |
-| **Author** | Victor Van (PM) |
-| **Assignee** | Engineering (you, via Codex) |
-| **Priority** | 🔴 Urgent — last-minute build, September deadline |
-| **Status** | Ready for implementation |
+| **Author** | Victor Van |
 | **Target stack** | Python, FastAPI (backend), Streamlit (frontend) |
 
 ---
 
 ## 1. Overview & Goals
 
-We're building a web app that generates on-demand practice problems for an
+I'm building a web app that generates on-demand practice problems for an
 intro Statistics course, using an LLM to write the problem, a step-by-step
 solution, and a final answer — then lets the student attempt it, get hints,
 and check their work.
