@@ -5,10 +5,15 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from starlette.concurrency import run_in_threadpool
 
-from .llm_client import GenerationError, LLMClient
 from .grading import GradingError, grade_answer
-from .models import AnswerCheckRequest, AnswerCheckResponse
-from .models import ProblemBatchResponse, ProblemPublic, ProblemRequest
+from .llm_client import GenerationError, LLMClient
+from .models import (
+    AnswerCheckRequest,
+    AnswerCheckResponse,
+    ProblemBatchResponse,
+    ProblemPublic,
+    ProblemRequest,
+)
 from .prompts import TOPIC_TAXONOMY
 from .store import ProblemStore
 

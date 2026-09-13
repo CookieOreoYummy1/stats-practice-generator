@@ -1,4 +1,5 @@
 import os
+import re
 import time
 from uuid import uuid4
 
@@ -8,14 +9,20 @@ from pydantic import BaseModel, ValidationError
 from .models import Problem, ProblemRequest
 from .math_validation import validate_math
 from .prompts import SYSTEM_PROMPT, generation_prompt
+from .confidence_intervals import MeanIntervalInputs, calculated_interval
+from .models import Topic
 
 
 class GenerationError(Exception):
     """Safe, user-facing generation failure."""
 
 
+class _GeneratedProblem(Problem):
+    mean_interval: MeanIntervalInputs | None = None
+
+
 class _ProblemBatch(BaseModel):
-    problems: list[Problem]
+    problems: list[_GeneratedProblem]
 
 
 class LLMClient:
@@ -78,6 +85,11 @@ class LLMClient:
             content = completion.choices[0].message.content if completion.choices else None
             try:
                 batch = _ProblemBatch.model_validate_json(content or "")
+                if request.topic == Topic.confidence_intervals and request.difficulty == "medium":
+                    for index, problem in enumerate(batch.problems):
+                        if problem.mean_interval is None:
+                            raise ValueError("Medium confidence interval problems require mean_interval inputs. Supply sample_mean, sample_std, sample_size, confidence_percent, critical_value, and decimal_places.")
+                        batch.problems[index] = calculated_interval(problem, problem.mean_interval)
                 for problem in batch.problems:
                     for text in [problem.question, *problem.hints, *problem.solution_steps, problem.final_answer]:
                         validate_math(text)
@@ -94,5 +106,10 @@ class LLMClient:
                 ])
                 continue
             # Own IDs server-side so repeated model IDs cannot overwrite cached answers.
-            return [p.model_copy(update={"id": str(uuid4())}) for p in batch.problems]
+            return [Problem.model_validate(p.model_dump()).model_copy(update={
+                "id": str(uuid4()),
+                "question": re.sub(r"\\degree(?![A-Za-z])", lambda _: r"^\circ", p.question),
+                "hints": [re.sub(r"\\degree(?![A-Za-z])", lambda _: r"^\circ", hint) for hint in p.hints],
+                "solution_steps": [re.sub(r"\\degree(?![A-Za-z])", lambda _: r"^\circ", step) for step in p.solution_steps],
+            }) for p in batch.problems]
         raise AssertionError("Unreachable")

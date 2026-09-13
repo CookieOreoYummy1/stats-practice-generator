@@ -116,3 +116,34 @@ def test_empty_hint_list(ui):
     assert app.button(key="hint_empty").disabled
     assert app.expander[0].caption[0].value == "No hints available for this problem."
     assert not app.exception
+
+
+def test_grading_updates_score_once_and_preserves_solutions(ui):
+    app, post = ui
+    for problem_id, correct in [("one", True), ("two", False)]:
+        post.return_value.json.return_value = {
+            "correct": correct, "feedback": "Correct" if correct else "Incorrect",
+            "solution_steps": [f"Worked solution {problem_id}"], "final_answer": "42",
+        }
+        app.text_input(key=f"answer_{problem_id}").set_value("42").run()
+        app.button(key=f"check_{problem_id}").click().run()
+        assert not app.exception
+        assert app.button(key=f"check_{problem_id}").disabled
+        assert any(m.value == f"Worked solution {problem_id}" for m in app.markdown)
+    assert app.session_state["score"] == {"correct": 1, "attempted": 2}
+    assert app.sidebar.metric[0].value == "1/2"
+    app.run()
+    assert post.call_count == 2
+    assert app.session_state["score"] == {"correct": 1, "attempted": 2}
+
+
+def test_saved_split_equation_renders_as_one_markdown_block(ui):
+    app, _ = ui
+    app.session_state["results"] = {"one": {
+        "correct": True, "feedback": "Correct", "solution_steps": [
+            "Transform back:", "$$", r"x = \mu + z\sigma", "$$", "Round to the nearest centimetre.",
+        ], "final_answer": "$173$",
+    }}
+    app.run()
+    assert not app.exception
+    assert any("$$\nx = \\mu + z\\sigma\n$$" in m.value for m in app.markdown)

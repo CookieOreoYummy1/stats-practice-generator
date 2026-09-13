@@ -1,6 +1,7 @@
 import json
 
 from .models import Problem, ProblemRequest, Topic
+from .confidence_intervals import MeanIntervalInputs
 
 
 SYSTEM_PROMPT = """You are an experienced statistics teaching assistant writing practice
@@ -88,6 +89,16 @@ TOPIC_TAXONOMY = {
 
 def generation_prompt(request: ProblemRequest) -> str:
     rubric = TOPIC_TAXONOMY[request.topic][request.difficulty]
+    interval_instructions = ""
+    if request.topic == Topic.confidence_intervals and request.difficulty == "medium":
+        interval_instructions = (
+            "\nFor each problem also include a mean_interval object matching this schema: "
+            + json.dumps(MeanIntervalInputs.model_json_schema())
+            + "\nChoose plausible one-sample mean inputs and the two-sided t critical value "
+            "for the chosen confidence_percent and sample_size minus one degrees of freedom. "
+            "The server will construct the numerical question, hints, solution, and final "
+            "answer from these inputs, supplying your critical value explicitly in the question."
+        )
     return (
         f"Generate exactly {request.count} distinct problems.\n"
         f"Topic: {request.topic.value}\nDifficulty: {request.difficulty}\n"
@@ -108,4 +119,8 @@ def generation_prompt(request: ProblemRequest) -> str:
         "double-encode the text: the decoded question must not contain literal "
         "backslash-n sequences or doubled backslashes before commands. "
         "Use doubled backslashes in decoded LaTeX only for intentional equation row breaks."
+        " Every question, hint, solution step, and final_answer must contain complete, "
+        "matched math delimiters. Never split an equation across solution_steps entries. "
+        "Wrap math in final_answer in $...$ too; leave explanatory prose outside."
+        + interval_instructions
     )

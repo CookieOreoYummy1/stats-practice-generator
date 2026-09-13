@@ -4,7 +4,7 @@ import re
 
 
 # Match code first so examples in backticks remain literal. Match existing math
-# as a unit so LaTeX commands inside it are never unescaped or rewritten.
+# as a unit so delimiter handling stays separate from command normalization.
 _SEGMENTS = re.compile(
     r"(?P<code>(?P<fence>`{3,}|~{3,})[^\n]*\n.*?^(?P=fence)[ \t]*$|`+[^`\n]*`+)"
     r"|(?P<display>(?<![\\$])\$\$(?!\$)(?P<display_body>.*?)(?<!\\)\$\$(?!\$))"
@@ -29,8 +29,8 @@ def _math_body(body: str) -> str:
 
 
 def _prose(text: str) -> str:
-    # A literal escaped newline outside math is transport formatting. A word
-    # boundary avoids corrupting commands such as \nu, \neq, and \nabla.
+    # A literal escaped newline outside math is transport formatting. Avoid
+    # lowercase continuations such as the commands \nu, \neq, and \nabla.
     return re.sub(r"(?<!\\)\\n(?![a-z])", "\n", text)
 
 

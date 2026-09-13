@@ -79,6 +79,16 @@ def test_missing_key_fails(monkeypatch):
         LLMClient()
 
 
+def test_gpt_oss_model_configuration(llm, monkeypatch):
+    monkeypatch.setenv("MODEL_NAME", "openai/gpt-oss-120b")
+    configured = LLMClient()
+    configured.client.chat.completions.create.return_value = completion(json.dumps({"problems": [problem_data()]}))
+    configured.generate_problems(ProblemRequest(topic="anova", difficulty="easy"))
+    kwargs = configured.client.chat.completions.create.call_args.kwargs
+    assert kwargs["model"] == "openai/gpt-oss-120b"
+    assert kwargs["response_format"] == {"type": "json_object"}
+
+
 def test_corrupted_math_triggers_regeneration(llm):
     bad = {**problem_data(), "question": r"Compute $$text{Mean}=frac{sum x_i}{n}$$."}
     good = {**problem_data(), "question": r"Compute $\text{Mean}=\frac{\sum x_i}{n}$."}
@@ -88,3 +98,53 @@ def test_corrupted_math_triggers_regeneration(llm):
     assert result[0].question == good["question"]
     assert create.call_count == 2
     assert "missing backslashes" in create.call_args.kwargs["messages"][-1]["content"]
+
+
+def test_degree_commands_normalized_after_validation(llm):
+    data = {
+        **problem_data(),
+        "question": r"Compare $20\degree$ and $30\degree C$.",
+        "hints": [r"Use $5\degree$ increments.", r"Keep $20^\circ$ and $\degrees$ intact."],
+        "solution_steps": [r"The difference is $10\degree$.", "Temperature: 20°C."],
+    }
+    llm.client.chat.completions.create.return_value = completion(json.dumps({"problems": [data]}))
+    problem = llm.generate_problems(ProblemRequest(topic="anova", difficulty="easy"))[0]
+    assert problem.question == r"Compare $20^\circ$ and $30^\circ C$."
+    assert problem.hints == [r"Use $5^\circ$ increments.", r"Keep $20^\circ$ and $\degrees$ intact."]
+    assert problem.solution_steps == [r"The difference is $10^\circ$.", "Temperature: 20°C."]
+    llm.client.chat.completions.create.assert_called_once()
+
+
+@pytest.mark.parametrize("field, broken", [
+    ("final_answer", r"P(D\mid C)=0.5; the events are not independent."),
+    ("solution_steps", ["$$", r"x = \mu + z\sigma", "$$"]),
+    ("solution_steps", [r"\(\approx 100.35+83.66+1.89=185.90.$$"]),
+])
+def test_live_formatting_failures_trigger_retry(llm, field, broken):
+    bad = {**problem_data(), field: broken}
+    create = llm.client.chat.completions.create
+    create.side_effect = [completion(json.dumps({"problems": [bad]})), completion(json.dumps({"problems": [problem_data()]}))]
+    assert len(llm.generate_problems(ProblemRequest(topic="anova", difficulty="easy"))) == 1
+    assert create.call_count == 2
+
+
+def test_medium_interval_uses_python_answer_and_private_inputs(llm):
+    data = {**problem_data(), "topic": "confidence_intervals", "difficulty": "medium",
+            "final_answer": "(743, 958)", "mean_interval": {
+                "sample_mean": 850, "sample_std": 120, "sample_size": 12,
+                "confidence_percent": 99, "critical_value": 3.106, "decimal_places": 0,
+            }}
+    llm.client.chat.completions.create.return_value = completion(json.dumps({"problems": [data]}))
+    problem = llm.generate_problems(ProblemRequest(topic="confidence_intervals", difficulty="medium"))[0]
+    assert problem.final_answer == "$(742, 958)$"
+    assert "mean_interval" not in problem.model_dump()
+    assert "743" not in " ".join(problem.solution_steps)
+    assert "t^*=3.106" in problem.question
+
+
+def test_medium_interval_requires_structured_inputs(llm):
+    data = {**problem_data(), "topic": "confidence_intervals", "difficulty": "medium"}
+    llm.client.chat.completions.create.return_value = completion(json.dumps({"problems": [data]}))
+    with pytest.raises(GenerationError):
+        llm.generate_problems(ProblemRequest(topic="confidence_intervals", difficulty="medium"))
+    assert llm.client.chat.completions.create.call_count == 2

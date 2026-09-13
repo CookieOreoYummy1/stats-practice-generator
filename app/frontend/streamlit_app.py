@@ -169,8 +169,7 @@ for index, problem in enumerate(st.session_state.problems, start=1):
             else:
                 st.error(normalize_math(result["feedback"]))
             st.markdown("**Worked solution**")
-            for step in result["solution_steps"]:
-                st.markdown(normalize_math(step))
+            st.markdown(normalize_math("\n\n".join(result["solution_steps"])))
             st.markdown("**Final answer**")
             st.markdown(normalize_math(result["final_answer"]))
 

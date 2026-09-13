@@ -1,0 +1,367 @@
+{
+  "generation": [
+    {
+      "topic": "descriptive_statistics",
+      "status": 200,
+      "seconds": 5.5,
+      "public_hides_solution": true,
+      "problem": {
+        "id": "7c28e6ba-ba92-4c5b-bdc7-5897af6eee50",
+        "topic": "descriptive_statistics",
+        "difficulty": "medium",
+        "question": "The university cafeteria records the number of sandwiches sold each day for one week:\n\n$45,\\ 52,\\ 48,\\ 47,\\ 50,\\ 49,\\ 46$\n\nThe manager assigns a weight to each day to reflect foot‑traffic:\n\nMonday (1), Tuesday (1), Wednesday (2), Thursday (1), Friday (3), Saturday (2), Sunday (1).\n\n**(a)** Compute the weighted mean number of sandwiches sold per day.\n\n$$\n\\bar{x}_w = \\frac{\\sum_{i=1}^{n} w_i x_i}{\\sum_{i=1}^{n} w_i}\n$$\n\n**(b)** Later it is discovered that on a special event day the cafeteria sold $120$ sandwiches. Treat this as an additional (unweighted) observation while keeping the original weights unchanged. Re‑calculate the (unweighted) mean and the median of the enlarged data set and explain how this outlier influences the mean compared with the median.",
+        "hints": [
+          "First compute the sum of the weighted products $w_i x_i$ and the total sum of the weights.",
+          "For part (b), add the outlier to the original list of observations, then find the ordinary mean by summing all values and dividing by the new count.",
+          "Sort the enlarged data set to locate the two middle values; the median is their average."
+        ],
+        "solution_steps": [
+          "List the observations $x_i$ and their corresponding weights $w_i$:",
+          "$x = [45,\\ 52,\\ 48,\\ 47,\\ 50,\\ 49,\\ 46]$, $w = [1,\\ 1,\\ 2,\\ 1,\\ 3,\\ 2,\\ 1]$.",
+          "Compute each product $w_i x_i$:",
+          "$45\\times1 = 45$, $52\\times1 = 52$, $48\\times2 = 96$, $47\\times1 = 47$, $50\\times3 = 150$, $49\\times2 = 98$, $46\\times1 = 46$.",
+          "Sum the weighted products: $45+52+96+47+150+98+46 = 534$.",
+          "Sum the weights: $1+1+2+1+3+2+1 = 11$.",
+          "Apply the weighted‑mean formula:",
+          "$\\bar{x}_w = 534 / 11 = 48.5454\\ldots$",
+          "Round to two decimal places: $\\boxed{48.55}$.",
+          "",
+          "Part (b): add the outlier $120$ to the original data (no weight attached). New data set:",
+          "$[45,\\ 52,\\ 48,\\ 47,\\ 50,\\ 49,\\ 46,\\ 120]$.",
+          "Sum of all eight values: $45+52+48+47+50+49+46+120 = 457$.",
+          "Unweighted mean: $\\bar{x} = 457/8 = 57.125$.",
+          "Round to two decimal places: $\\boxed{57.13}$.",
+          "",
+          "To find the median, sort the data:",
+          "$[45,\\ 46,\\ 47,\\ 48,\\ 49,\\ 50,\\ 52,\\ 120]$.",
+          "With an even number of observations, the median is the average of the 4th and 5th values:",
+          "$ (48 + 49)/2 = 48.5$.",
+          "Rounded: $\\boxed{48.5}$.",
+          "",
+          "Discussion: The outlier increases the mean from about $48.14$ (original unweighted mean) to $57.13$, a large shift because the mean uses all values equally. The median moves only from $48$ to $48.5$, showing that the median is far less sensitive to extreme values."
+        ],
+        "final_answer": "Weighted mean = 48.55 (rounded to 2 decimal places). Including the outlier, the (unweighted) mean = 57.13 and the median = 48.5. The outlier raises the mean substantially, while the median changes only slightly."
+      },
+      "rendered_text": {
+        "question": "The university cafeteria records the number of sandwiches sold each day for one week:\n\n$45,\\ 52,\\ 48,\\ 47,\\ 50,\\ 49,\\ 46$\n\nThe manager assigns a weight to each day to reflect foot‑traffic:\n\nMonday (1), Tuesday (1), Wednesday (2), Thursday (1), Friday (3), Saturday (2), Sunday (1).\n\n**(a)** Compute the weighted mean number of sandwiches sold per day.\n\n\n\n$$\n\\bar{x}_w = \\frac{\\sum_{i=1}^{n} w_i x_i}{\\sum_{i=1}^{n} w_i}\n$$\n\n\n\n**(b)** Later it is discovered that on a special event day the cafeteria sold $120$ sandwiches. Treat this as an additional (unweighted) observation while keeping the original weights unchanged. Re‑calculate the (unweighted) mean and the median of the enlarged data set and explain how this outlier influences the mean compared with the median.",
+        "solution_steps": [
+          "List the observations $x_i$ and their corresponding weights $w_i$:",
+          "$x = [45,\\ 52,\\ 48,\\ 47,\\ 50,\\ 49,\\ 46]$, $w = [1,\\ 1,\\ 2,\\ 1,\\ 3,\\ 2,\\ 1]$.",
+          "Compute each product $w_i x_i$:",
+          "$45\\times1 = 45$, $52\\times1 = 52$, $48\\times2 = 96$, $47\\times1 = 47$, $50\\times3 = 150$, $49\\times2 = 98$, $46\\times1 = 46$.",
+          "Sum the weighted products: $45+52+96+47+150+98+46 = 534$.",
+          "Sum the weights: $1+1+2+1+3+2+1 = 11$.",
+          "Apply the weighted‑mean formula:",
+          "$\\bar{x}_w = 534 / 11 = 48.5454\\ldots$",
+          "Round to two decimal places: $\\boxed{48.55}$.",
+          "",
+          "Part (b): add the outlier $120$ to the original data (no weight attached). New data set:",
+          "$[45,\\ 52,\\ 48,\\ 47,\\ 50,\\ 49,\\ 46,\\ 120]$.",
+          "Sum of all eight values: $45+52+48+47+50+49+46+120 = 457$.",
+          "Unweighted mean: $\\bar{x} = 457/8 = 57.125$.",
+          "Round to two decimal places: $\\boxed{57.13}$.",
+          "",
+          "To find the median, sort the data:",
+          "$[45,\\ 46,\\ 47,\\ 48,\\ 49,\\ 50,\\ 52,\\ 120]$.",
+          "With an even number of observations, the median is the average of the 4th and 5th values:",
+          "$ (48 + 49)/2 = 48.5$.",
+          "Rounded: $\\boxed{48.5}$.",
+          "",
+          "Discussion: The outlier increases the mean from about $48.14$ (original unweighted mean) to $57.13$, a large shift because the mean uses all values equally. The median moves only from $48$ to $48.5$, showing that the median is far less sensitive to extreme values."
+        ],
+        "final_answer": "Weighted mean = 48.55 (rounded to 2 decimal places). Including the outlier, the (unweighted) mean = 57.13 and the median = 48.5. The outlier raises the mean substantially, while the median changes only slightly."
+      }
+    },
+    {
+      "topic": "probability_basics",
+      "status": 200,
+      "seconds": 2.47,
+      "public_hides_solution": true,
+      "problem": {
+        "id": "f27b6884-af47-4d19-b3df-685c99d2e4bd",
+        "topic": "probability_basics",
+        "difficulty": "medium",
+        "question": "In a certain town, 30\\% of households own a dog, 20\\% own a cat, and 10\\% own both a dog and a cat. If a randomly selected household is known to own a cat, what is the probability that it also owns a dog? Based on these data, are dog ownership and cat ownership independent events?\n\n$$\nP(D) = 0.30,\nP(C) = 0.20,\nP(D \\cap C) = 0.10\n$$",
+        "hints": [
+          "Recall the definition of conditional probability: $P(A\\mid B) = \\frac{P(A\\cap B)}{P(B)}$.",
+          "Identify the events: let $D$ be owning a dog and $C$ be owning a cat. Use the numbers given for $P(D\\cap C)$ and $P(C)$.",
+          "After finding $P(D\\mid C)$, compare $P(D)\\times P(C)$ with $P(D\\cap C)$ to check independence."
+        ],
+        "solution_steps": [
+          "Step 1: Write the formula for the conditional probability of owning a dog given that the household owns a cat: $P(D\\mid C)=\\frac{P(D\\cap C)}{P(C)}$.",
+          "Step 2: Substitute the given values: $P(D\\mid C)=\\frac{0.10}{0.20}$.",
+          "Step 3: Compute the fraction: $\\frac{0.10}{0.20}=0.5$.",
+          "Step 4: To test independence, calculate the product $P(D)\\times P(C)=0.30\\times 0.20=0.06$.",
+          "Step 5: Compare this product with $P(D\\cap C)=0.10$. Since $0.06 \\neq 0.10$, the two events are not independent.",
+          "Step 6: Summarize the results."
+        ],
+        "final_answer": "P(D\\mid C)=0.5; the events are not independent."
+      },
+      "rendered_text": {
+        "question": "In a certain town, 30\\% of households own a dog, 20\\% own a cat, and 10\\% own both a dog and a cat. If a randomly selected household is known to own a cat, what is the probability that it also owns a dog? Based on these data, are dog ownership and cat ownership independent events?\n\n\n\n$$\nP(D) = 0.30,\nP(C) = 0.20,\nP(D \\cap C) = 0.10\n$$\n\n",
+        "solution_steps": [
+          "Step 1: Write the formula for the conditional probability of owning a dog given that the household owns a cat: $P(D\\mid C)=\\frac{P(D\\cap C)}{P(C)}$.",
+          "Step 2: Substitute the given values: $P(D\\mid C)=\\frac{0.10}{0.20}$.",
+          "Step 3: Compute the fraction: $\\frac{0.10}{0.20}=0.5$.",
+          "Step 4: To test independence, calculate the product $P(D)\\times P(C)=0.30\\times 0.20=0.06$.",
+          "Step 5: Compare this product with $P(D\\cap C)=0.10$. Since $0.06 \\neq 0.10$, the two events are not independent.",
+          "Step 6: Summarize the results."
+        ],
+        "final_answer": "P(D\\mid C)=0.5; the events are not independent."
+      }
+    },
+    {
+      "topic": "discrete_distributions",
+      "status": 200,
+      "seconds": 5.02,
+      "public_hides_solution": true,
+      "problem": {
+        "id": "d4790828-907b-4e5f-8293-4d4e4ff5a5a0",
+        "topic": "discrete_distributions",
+        "difficulty": "medium",
+        "question": "A quality‑control inspector randomly selects $n = 20$ light bulbs from a production line where each bulb has a $p = 0.02$ probability of being defective, independently of the others.\n\n(a) Compute the probability that at most two bulbs are defective, i.e. $P(X \\le 2)$.\n\n(b) Find the expected number of defective bulbs in the sample.\n\nHere $X$ denotes the number of defective bulbs in the sample.",
+        "hints": [
+          "Identify the distribution of $X$.",
+          "Write the cumulative probability $P(X \\le 2)$ as a sum of binomial terms.",
+          "Recall the formula for the expected value of a binomial random variable."
+        ],
+        "solution_steps": [
+          "The number of defective bulbs $X$ follows a binomial distribution with parameters $n=20$ and $p=0.02$: $X \\sim \\text{Bin}(20,0.02)$.  This is because each bulb is either defective or not, with the same probability $p$, and the selections are independent.",
+          "The probability of at most two defectives is\n$$\nP(X \\le 2) = \\sum_{k=0}^{2} \\binom{20}{k} (0.02)^{k} (0.98)^{20-k}.\n$$",
+          "Compute each term of the sum:",
+          "For $k=0$: $\\binom{20}{0}=1$, so $\\;T_0 = (0.98)^{20} \\approx 0.6676$.",
+          "For $k=1$: $\\binom{20}{1}=20$, so $\\;T_1 = 20 \\times 0.02 \\times (0.98)^{19} \\approx 20 \\times 0.02 \\times 0.6812 \\approx 0.2725$.",
+          "For $k=2$: $\\binom{20}{2}=190$, so $\\;T_2 = 190 \\times (0.02)^{2} \\times (0.98)^{18} \\approx 190 \\times 0.0004 \\times 0.6949 \\approx 0.0528$.",
+          "Add the three terms:\n$$\nP(X \\le 2) \\approx 0.6676 + 0.2725 + 0.0528 = 0.9929.\n$$",
+          "The expected value of a binomial random variable is $E[X] = n p$.\nThus\n$$\nE[X] = 20 \\times 0.02 = 0.4.\n$$"
+        ],
+        "final_answer": "P(X \\le 2) \\approx 0.9929; \\; E[X] = 0.4."
+      },
+      "rendered_text": {
+        "question": "A quality‑control inspector randomly selects $n = 20$ light bulbs from a production line where each bulb has a $p = 0.02$ probability of being defective, independently of the others.\n\n(a) Compute the probability that at most two bulbs are defective, i.e. $P(X \\le 2)$.\n\n(b) Find the expected number of defective bulbs in the sample.\n\nHere $X$ denotes the number of defective bulbs in the sample.",
+        "solution_steps": [
+          "The number of defective bulbs $X$ follows a binomial distribution with parameters $n=20$ and $p=0.02$: $X \\sim \\text{Bin}(20,0.02)$.  This is because each bulb is either defective or not, with the same probability $p$, and the selections are independent.",
+          "The probability of at most two defectives is\n\n\n$$\nP(X \\le 2) = \\sum_{k=0}^{2} \\binom{20}{k} (0.02)^{k} (0.98)^{20-k}.\n$$\n\n",
+          "Compute each term of the sum:",
+          "For $k=0$: $\\binom{20}{0}=1$, so $\\;T_0 = (0.98)^{20} \\approx 0.6676$.",
+          "For $k=1$: $\\binom{20}{1}=20$, so $\\;T_1 = 20 \\times 0.02 \\times (0.98)^{19} \\approx 20 \\times 0.02 \\times 0.6812 \\approx 0.2725$.",
+          "For $k=2$: $\\binom{20}{2}=190$, so $\\;T_2 = 190 \\times (0.02)^{2} \\times (0.98)^{18} \\approx 190 \\times 0.0004 \\times 0.6949 \\approx 0.0528$.",
+          "Add the three terms:\n\n\n$$\nP(X \\le 2) \\approx 0.6676 + 0.2725 + 0.0528 = 0.9929.\n$$\n\n",
+          "The expected value of a binomial random variable is $E[X] = n p$.\nThus\n\n\n$$\nE[X] = 20 \\times 0.02 = 0.4.\n$$\n\n"
+        ],
+        "final_answer": "P(X \\le 2) \\approx 0.9929; \\; E[X] = 0.4."
+      }
+    },
+    {
+      "topic": "continuous_distributions",
+      "status": 200,
+      "seconds": 5.12,
+      "public_hides_solution": true,
+      "problem": {
+        "id": "e450fe59-19e1-4480-ab1c-fb36ada2afb8",
+        "topic": "continuous_distributions",
+        "difficulty": "medium",
+        "question": "The heights (in cm) of adult women in a certain city are well modelled by a normal distribution with mean $\\mu = 165$ cm and standard deviation $\\sigma = 6$ cm. What height $x$ corresponds to the 90th percentile, i.e., the height such that 90% of women are shorter than $x$? Round your answer to the nearest centimetre.",
+        "hints": [
+          "Recall that a percentile $p$ of a normal distribution corresponds to a $z$‑score $z_p$ satisfying $P(Z \\le z_p)=p$ for $Z \\sim N(0,1)$.",
+          "Use a standard normal table (or calculator) to find the $z$‑score for $p = 0.90$.",
+          "Convert the $z$‑score back to the original scale with $x = \\mu + z\\sigma$."
+        ],
+        "solution_steps": [
+          "Let $Z$ be a standard normal variable. We need $z_{0.90}$ such that $P(Z \\le z_{0.90}) = 0.90$.",
+          "From a standard normal table, $z_{0.90} \\approx 1.2816$ (the value whose cumulative probability is closest to 0.90).",
+          "Transform back to the original normal distribution:",
+          "$$",
+          "x = \\mu + z_{0.90}\\,\\sigma",
+          "$$",
+          "Substitute $\\mu = 165$, $\\sigma = 6$, and $z_{0.90} = 1.2816$:",
+          "$$",
+          "x = 165 + 1.2816 \\times 6",
+          "$$",
+          "$$",
+          "x = 165 + 7.6896 = 172.6896 \\text{ cm}",
+          "$$",
+          "Rounded to the nearest centimetre, $x \\approx 173$ cm."
+        ],
+        "final_answer": "$173\\text{ cm}$"
+      },
+      "rendered_text": {
+        "question": "The heights (in cm) of adult women in a certain city are well modelled by a normal distribution with mean $\\mu = 165$ cm and standard deviation $\\sigma = 6$ cm. What height $x$ corresponds to the 90th percentile, i.e., the height such that 90% of women are shorter than $x$? Round your answer to the nearest centimetre.",
+        "solution_steps": [
+          "Let $Z$ be a standard normal variable. We need $z_{0.90}$ such that $P(Z \\le z_{0.90}) = 0.90$.",
+          "From a standard normal table, $z_{0.90} \\approx 1.2816$ (the value whose cumulative probability is closest to 0.90).",
+          "Transform back to the original normal distribution:",
+          "$$",
+          "x = \\mu + z_{0.90}\\,\\sigma",
+          "$$",
+          "Substitute $\\mu = 165$, $\\sigma = 6$, and $z_{0.90} = 1.2816$:",
+          "$$",
+          "x = 165 + 1.2816 \\times 6",
+          "$$",
+          "$$",
+          "x = 165 + 7.6896 = 172.6896 \\text{ cm}",
+          "$$",
+          "Rounded to the nearest centimetre, $x \\approx 173$ cm."
+        ],
+        "final_answer": "$173\\text{ cm}$"
+      }
+    },
+    {
+      "topic": "sampling_distributions_and_clt",
+      "status": 502,
+      "seconds": 6.3,
+      "error": {
+        "detail": "Too many requests right now — wait a moment and try again."
+      }
+    },
+    {
+      "topic": "confidence_intervals",
+      "status": 200,
+      "seconds": 6.05,
+      "public_hides_solution": true,
+      "problem": {
+        "id": "bdd7ba33-e46b-48bd-97f2-365ac70f1219",
+        "topic": "confidence_intervals",
+        "difficulty": "medium",
+        "question": "A nutrition researcher records the daily calcium intake (in mg) of a random sample of $n=12$ adults. The sample has a mean intake of $\\bar{x}=850$ mg and a sample standard deviation of $s=120$ mg.\n\nCompute a 99% confidence interval for the population mean calcium intake.\n\n$$\n\\\\text{CI}= \\\\bar{x} \\\\pm t_{\\\\alpha/2,df}\\\\frac{s}{\\\\sqrt{n}}\n$$",
+        "hints": [
+          "Identify the appropriate confidence‑interval formula for a mean when the population standard deviation is unknown.",
+          "Determine the degrees of freedom and locate the critical $t$‑value for a two‑sided 99% confidence level.",
+          "Calculate the standard error, then the margin of error, and finally add and subtract it from the sample mean.",
+          "Round the resulting bounds to the nearest milligram."
+        ],
+        "solution_steps": [
+          "The confidence‑interval for a population mean with unknown $\\sigma$ is\n$$\n\\\\text{CI}= \\\\bar{x} \\pm t_{\\\\alpha/2,df} \\frac{s}{\\\\sqrt{n}}.\n$$",
+          "Here $n=12$, so the degrees of freedom are $df=n-1=11$. For a 99% confidence level, $\\alpha=0.01$ and $\\alpha/2=0.005$. From a $t$‑table $t_{0.005,11}=3.106$ (rounded to three decimals).",
+          "The standard error is\n$$\nSE = \\frac{s}{\\sqrt{n}} = \\frac{120}{\\sqrt{12}} \\approx \\frac{120}{3.4641} \\approx 34.64\\text{ mg}.\n$$",
+          "The margin of error is\n$$\nME = t_{0.005,11}\\times SE \\approx 3.106 \\times 34.64 \\approx 107.58\\text{ mg}.\n$$",
+          "Lower bound: $\\;\\bar{x}-ME = 850 - 107.58 \\approx 742.42\\text{ mg}.$\nUpper bound: $\\;\\bar{x}+ME = 850 + 107.58 \\approx 957.58\\text{ mg}.$",
+          "Rounding each bound to the nearest milligram gives a 99% confidence interval of $(743,\\ 958)\\text{ mg}.$"
+        ],
+        "final_answer": "$$(743,\\ 958)\\\\text{ mg}$$"
+      },
+      "rendered_text": {
+        "question": "A nutrition researcher records the daily calcium intake (in mg) of a random sample of $n=12$ adults. The sample has a mean intake of $\\bar{x}=850$ mg and a sample standard deviation of $s=120$ mg.\n\nCompute a 99% confidence interval for the population mean calcium intake.\n\n\n\n$$\n\\text{CI}= \\bar{x} \\pm t_{\\alpha/2,df}\\frac{s}{\\sqrt{n}}\n$$\n\n",
+        "solution_steps": [
+          "The confidence‑interval for a population mean with unknown $\\sigma$ is\n\n\n$$\n\\text{CI}= \\bar{x} \\pm t_{\\alpha/2,df} \\frac{s}{\\sqrt{n}}.\n$$\n\n",
+          "Here $n=12$, so the degrees of freedom are $df=n-1=11$. For a 99% confidence level, $\\alpha=0.01$ and $\\alpha/2=0.005$. From a $t$‑table $t_{0.005,11}=3.106$ (rounded to three decimals).",
+          "The standard error is\n\n\n$$\nSE = \\frac{s}{\\sqrt{n}} = \\frac{120}{\\sqrt{12}} \\approx \\frac{120}{3.4641} \\approx 34.64\\text{ mg}.\n$$\n\n",
+          "The margin of error is\n\n\n$$\nME = t_{0.005,11}\\times SE \\approx 3.106 \\times 34.64 \\approx 107.58\\text{ mg}.\n$$\n\n",
+          "Lower bound: $\\;\\bar{x}-ME = 850 - 107.58 \\approx 742.42\\text{ mg}.$\nUpper bound: $\\;\\bar{x}+ME = 850 + 107.58 \\approx 957.58\\text{ mg}.$",
+          "Rounding each bound to the nearest milligram gives a 99% confidence interval of $(743,\\ 958)\\text{ mg}.$"
+        ],
+        "final_answer": "\n\n$$\n(743,\\ 958)\\text{ mg}\n$$\n\n"
+      }
+    },
+    {
+      "topic": "hypothesis_testing",
+      "status": 502,
+      "seconds": 6.28,
+      "error": {
+        "detail": "Too many requests right now — wait a moment and try again."
+      }
+    },
+    {
+      "topic": "correlation_and_regression",
+      "status": 502,
+      "seconds": 6.41,
+      "error": {
+        "detail": "Too many requests right now — wait a moment and try again."
+      }
+    },
+    {
+      "topic": "anova",
+      "status": 200,
+      "seconds": 5.24,
+      "public_hides_solution": true,
+      "problem": {
+        "id": "c293c069-7891-4343-8197-de4ea504123c",
+        "topic": "anova",
+        "difficulty": "medium",
+        "question": "An educational researcher tests three different teaching methods. The sample sizes and observed group means are:\n\n- Method A: n₁ = 8, $\\bar{x}_1 = 78$\n- Method B: n₂ = 7, $\\bar{x}_2 = 85$\n- Method C: n₃ = 9, $\\bar{x}_3 = 82$\n\nAll groups are assumed to have the same within‑group variance. The pooled within‑group variance estimate is $s^2 = 16$ (so the within‑group standard deviation is 4). Using a one‑way ANOVA at significance level $\\alpha = 0.05$, compute the F‑statistic and state the conclusion about the equality of the three population means.\n",
+        "hints": [
+          "First find the grand (overall) mean of all observations combined.",
+          "Next calculate the between‑group sum of squares using the group means and the grand mean.",
+          "Finally compute the F‑statistic and compare it to the critical value for $\\alpha=0.05$ with the appropriate degrees of freedom."
+        ],
+        "solution_steps": [
+          "Calculate the total sample size: $N = 8+7+9 = 24$.",
+          "Compute the grand mean: $$\\bar{x}_{..}=\\frac{8(78)+7(85)+9(82)}{24}=\\frac{1957}{24}\\approx 81.54.$$",
+          "Calculate the between‑group sum of squares: $$SS_{B}=\\sum n_i(\\bar{x}_i-\\bar{x}_{..})^2$$\n\\(=8(78-81.54)^2+7(85-81.54)^2+9(82-81.54)^2\\)\n\\(\\approx 8(3.54)^2+7(3.46)^2+9(0.46)^2\\)\n\\(\\approx 100.35+83.66+1.89=185.90.$$",
+          "Degrees of freedom between groups: $df_{B}=k-1=3-1=2$, so $$MS_{B}=\\frac{SS_{B}}{df_{B}}=\\frac{185.90}{2}\\approx 92.95.$$",
+          "Within‑group sum of squares is obtained from the pooled variance: $$SS_{W}=s^2(N-k)=16\\times(24-3)=16\\times21=336.$$",
+          "Degrees of freedom within groups: $df_{W}=N-k=24-3=21$, thus $$MS_{W}=\\frac{SS_{W}}{df_{W}}=\\frac{336}{21}=16.$$",
+          "Compute the F‑statistic: $$F=\\frac{MS_{B}}{MS_{W}}=\\frac{92.95}{16}\\approx 5.81.$$",
+          "The critical value for $\\alpha=0.05$ with $df_{1}=2$ and $df_{2}=21$ is $F_{0.05,2,21}\\approx 3.47$. Since $5.81 > 3.47$, we reject the null hypothesis that all three population means are equal."
+        ],
+        "final_answer": "F \\approx 5.81; since 5.81 > 3.47, we reject $H_0$ and conclude that the three teaching methods have different mean scores."
+      },
+      "rendered_text": {
+        "question": "An educational researcher tests three different teaching methods. The sample sizes and observed group means are:\n\n- Method A: n₁ = 8, $\\bar{x}_1 = 78$\n- Method B: n₂ = 7, $\\bar{x}_2 = 85$\n- Method C: n₃ = 9, $\\bar{x}_3 = 82$\n\nAll groups are assumed to have the same within‑group variance. The pooled within‑group variance estimate is $s^2 = 16$ (so the within‑group standard deviation is 4). Using a one‑way ANOVA at significance level $\\alpha = 0.05$, compute the F‑statistic and state the conclusion about the equality of the three population means.\n",
+        "solution_steps": [
+          "Calculate the total sample size: $N = 8+7+9 = 24$.",
+          "Compute the grand mean: \n\n$$\n\\bar{x}_{..}=\\frac{8(78)+7(85)+9(82)}{24}=\\frac{1957}{24}\\approx 81.54.\n$$\n\n",
+          "Calculate the between‑group sum of squares: \n\n$$\nSS_{B}=\\sum n_i(\\bar{x}_i-\\bar{x}_{..})^2\n$$\n\n\n$=8(78-81.54)^2+7(85-81.54)^2+9(82-81.54)^2$\n$\\approx 8(3.54)^2+7(3.46)^2+9(0.46)^2$\n\\(\\approx 100.35+83.66+1.89=185.90.$$",
+          "Degrees of freedom between groups: $df_{B}=k-1=3-1=2$, so \n\n$$\nMS_{B}=\\frac{SS_{B}}{df_{B}}=\\frac{185.90}{2}\\approx 92.95.\n$$\n\n",
+          "Within‑group sum of squares is obtained from the pooled variance: \n\n$$\nSS_{W}=s^2(N-k)=16\\times(24-3)=16\\times21=336.\n$$\n\n",
+          "Degrees of freedom within groups: $df_{W}=N-k=24-3=21$, thus \n\n$$\nMS_{W}=\\frac{SS_{W}}{df_{W}}=\\frac{336}{21}=16.\n$$\n\n",
+          "Compute the F‑statistic: \n\n$$\nF=\\frac{MS_{B}}{MS_{W}}=\\frac{92.95}{16}\\approx 5.81.\n$$\n\n",
+          "The critical value for $\\alpha=0.05$ with $df_{1}=2$ and $df_{2}=21$ is $F_{0.05,2,21}\\approx 3.47$. Since $5.81 > 3.47$, we reject the null hypothesis that all three population means are equal."
+        ],
+        "final_answer": "F \\approx 5.81; since 5.81 > 3.47, we reject $H_0$ and conclude that the three teaching methods have different mean scores."
+      }
+    }
+  ],
+  "grading": [
+    {
+      "problem_id": "controlled-mean",
+      "answer": "5",
+      "expected": true,
+      "status": 502,
+      "passed": false,
+      "result": {
+        "detail": "Couldn't check the answer right now. Please try again shortly."
+      }
+    },
+    {
+      "problem_id": "controlled-mean",
+      "answer": "100",
+      "expected": false,
+      "status": 502,
+      "passed": false,
+      "result": {
+        "detail": "Couldn't check the answer right now. Please try again shortly."
+      }
+    },
+    {
+      "problem_id": "controlled-probability",
+      "answer": "25%",
+      "expected": true,
+      "status": 502,
+      "passed": false,
+      "result": {
+        "detail": "Couldn't check the answer right now. Please try again shortly."
+      }
+    },
+    {
+      "problem_id": "controlled-probability",
+      "answer": "1/4",
+      "expected": true,
+      "status": 200,
+      "passed": true,
+      "result": {
+        "correct": true,
+        "feedback": "Your answer $1/4$ equals $0.25$, the correct probability since there are 3 red out of 12 total balls.",
+        "solution_steps": [
+          "3 / 12 = 0.25"
+        ],
+        "final_answer": "0.25"
+      }
+    }
+  ],
+  "limitations": [
+    "Browser LaTeX rendering is not checked.",
+    "Generated mathematics requires independent review; schema success is not a correctness verdict."
+  ],
+  "model": "openai/gpt-oss-120b"
+}

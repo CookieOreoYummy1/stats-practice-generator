@@ -41,3 +41,8 @@ def test_preserves_real_row_breaks_while_fixing_commands():
 def test_newline_conversion_preserves_math_and_code():
     text = r"Use $\nu + \neq$ and `\n` or `\\frac`.\nNext"
     assert normalize_math(text) == r"Use $\nu + \neq$ and `\n` or `\\frac`." + "\nNext"
+
+
+@pytest.mark.parametrize("text", ["Temperature: 20°C.", "$20°$", r"$20^{\circ}\mathrm{C}$"])
+def test_degree_notation_is_preserved(text):
+    assert normalize_math(text) == text
