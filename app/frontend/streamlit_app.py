@@ -11,12 +11,30 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000").rstrip("/")
 
 st.set_page_config(page_title="Statistics Practice", page_icon="📊")
+st.markdown(
+    """
+    <style>
+    .stButton > button { border-radius: 0.55rem; font-weight: 600; }
+    [data-testid="stSidebar"] .stButton > button {
+        min-height: 2.6rem;
+        border-radius: 0.65rem;
+    }
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
+        gap: 0.35rem;
+    }
+    [data-testid="stExpander"] { border-radius: 0.65rem; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 st.title("Statistics Practice")
+st.caption("Build confidence with focused, step-by-step practice.")
 
 st.session_state.setdefault("problems", [])
 st.session_state.setdefault("results", {})
 st.session_state.setdefault("hints_shown", {})
 st.session_state.setdefault("score", {"correct": 0, "attempted": 0})
+st.session_state.setdefault("difficulty", "easy")
 
 
 def reset_practice() -> None:
@@ -39,6 +57,10 @@ def api_error_message(error: requests.HTTPError, fallback: str) -> str:
         except ValueError:
             pass
     return fallback
+
+
+def choose_difficulty(value: str) -> None:
+    st.session_state.difficulty = value
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -69,7 +91,19 @@ with st.sidebar:
         "Topic", options=list(topic_names), format_func=topic_names.get,
         disabled=not topics,
     )
-    difficulty = st.radio("Difficulty", ["easy", "medium", "hard"], format_func=str.title)
+    st.markdown("**Difficulty**")
+    difficulty_columns = st.columns(3)
+    for column, value in zip(difficulty_columns, ("easy", "medium", "hard")):
+        with column:
+            st.button(
+                value.title(),
+                key=f"difficulty_{value}",
+                type="primary" if st.session_state.difficulty == value else "secondary",
+                on_click=choose_difficulty,
+                args=(value,),
+                use_container_width=True,
+            )
+    difficulty = st.session_state.difficulty
     count = st.slider("Number of problems", min_value=1, max_value=5, value=1)
     generate = st.button("Generate Problems", type="primary", disabled=not topics)
     st.button("New Set", on_click=reset_practice)
