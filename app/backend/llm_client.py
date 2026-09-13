@@ -6,6 +6,7 @@ from groq import APIError, APITimeoutError, AuthenticationError, Groq, RateLimit
 from pydantic import BaseModel, ValidationError
 
 from .models import Problem, ProblemRequest
+from .math_validation import validate_math
 from .prompts import SYSTEM_PROMPT, generation_prompt
 
 
@@ -77,6 +78,9 @@ class LLMClient:
             content = completion.choices[0].message.content if completion.choices else None
             try:
                 batch = _ProblemBatch.model_validate_json(content or "")
+                for problem in batch.problems:
+                    for text in [problem.question, *problem.hints, *problem.solution_steps, problem.final_answer]:
+                        validate_math(text)
                 if len(batch.problems) != request.count:
                     raise ValueError(f"Expected exactly {request.count} problems.")
                 if any(p.topic != request.topic or p.difficulty != request.difficulty for p in batch.problems):

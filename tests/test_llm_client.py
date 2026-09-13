@@ -77,3 +77,14 @@ def test_missing_key_fails(monkeypatch):
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with pytest.raises(RuntimeError, match="Set GROQ_API_KEY"):
         LLMClient()
+
+
+def test_corrupted_math_triggers_regeneration(llm):
+    bad = {**problem_data(), "question": r"Compute $$text{Mean}=frac{sum x_i}{n}$$."}
+    good = {**problem_data(), "question": r"Compute $\text{Mean}=\frac{\sum x_i}{n}$."}
+    create = llm.client.chat.completions.create
+    create.side_effect = [completion(json.dumps({"problems": [bad]})), completion(json.dumps({"problems": [good]}))]
+    result = llm.generate_problems(ProblemRequest(topic="anova", difficulty="easy"))
+    assert result[0].question == good["question"]
+    assert create.call_count == 2
+    assert "missing backslashes" in create.call_args.kwargs["messages"][-1]["content"]

@@ -4,6 +4,7 @@ from pathlib import Path
 import requests
 import streamlit as st
 from dotenv import load_dotenv
+from math_formatting import normalize_math
 
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
@@ -86,7 +87,7 @@ if not st.session_state.problems:
 for index, problem in enumerate(st.session_state.problems, start=1):
     with st.container():
         st.subheader(f"Problem {index}")
-        st.markdown(problem["question"])
+        st.markdown(normalize_math(problem["question"]))
         problem_id = problem["id"]
         checked = problem_id in st.session_state.results
         answer = st.text_input("Your answer", key=f"answer_{problem_id}", disabled=checked)
@@ -126,14 +127,14 @@ for index, problem in enumerate(st.session_state.problems, start=1):
         if problem_id in st.session_state.results:
             result = st.session_state.results[problem_id]
             if result["correct"]:
-                st.success(result["feedback"])
+                st.success(normalize_math(result["feedback"]))
             else:
-                st.error(result["feedback"])
+                st.error(normalize_math(result["feedback"]))
             st.markdown("**Worked solution**")
             for step in result["solution_steps"]:
-                st.markdown(step)
+                st.markdown(normalize_math(step))
             st.markdown("**Final answer**")
-            st.markdown(result["final_answer"])
+            st.markdown(normalize_math(result["final_answer"]))
 
 st.sidebar.metric(
     "Score", f"{st.session_state.score['correct']}/{st.session_state.score['attempted']}"

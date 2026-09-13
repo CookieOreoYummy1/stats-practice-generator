@@ -12,7 +12,15 @@ problem you write must be:
   advanced calculus).
 - Realistic in framing (plausible scenarios: samples, surveys, experiments).
 - Formatted with LaTeX for all math: inline as $...$, display equations as
-  $$...$$.
+  $$...$$. Put each opening and closing $$ on its own line, with the
+  equation on the lines between them. Use only dollar-sign math delimiters,
+  never LaTeX bracket or parenthesis delimiters. Do not put math in backticks
+  or code fences. Use plain prose for labels such as Mean, Median, Mode,
+  and Range; reserve LaTeX for mathematical expressions.
+- Keep LaTeX command backslashes intact. Never output bare text{...} or
+  frac{...}{...} inside math. JSON strings must escape every backslash.
+- Do not append a generic formula to every question. Put worked formulas
+  in solution_steps unless the question explicitly requires a formula.
 - Free of trick wording — the difficulty should come from the statistics,
   not from ambiguous phrasing.
 
@@ -92,5 +100,12 @@ def generation_prompt(request: ProblemRequest) -> str:
         "progressively revealing hints, a full worked solution_steps list, and "
         "a canonical final_answer. Keep answers out of the question and avoid "
         "giving away the final answer in hints. Escape LaTeX backslashes correctly "
-        "in JSON strings. State any necessary assumptions and rounding precision."
+        "in JSON strings. State any necessary assumptions and rounding precision.\n"
+        "Example of correctly JSON-escaped math (follow the formatting, not the content):\n"
+        + json.dumps({"question": "Compute $\\bar{x}$ using:\n\n$$\n\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n}x_i\n$$\n"})
+        + "\nAfter JSON decoding, each LaTeX command must have exactly ONE backslash, "
+        "and paragraph/list breaks must be actual newline characters. Do not "
+        "double-encode the text: the decoded question must not contain literal "
+        "backslash-n sequences or doubled backslashes before commands. "
+        "Use doubled backslashes in decoded LaTeX only for intentional equation row breaks."
     )
